@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Stop watch</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
+    .stop-watch {
+      font-family: 'Source Code Pro', monospace;
+      text-align: center;
+      font-size: 3em;
+      padding: 30px;
+    }
+
+    .control {
+      width: 300px;
+      padding: 5px;
+      margin-top: 15px;
+      font-size: 36px;
+      font-weight: bold;
+      border: 2px solid #f44336;
+      border-radius: 4px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .control:hover {
+      background: #f44336;
+      color: aliceblue;
+    }
+  </style>
+  <title>Stop watch</title>
+</head>
+<body>
+  <div class="stop-watch">
+    <div class="display">00:00:00</div>
+    <button class="control">Start</button>
+  </div>
+  <script>
+    const $control = document.querySelector('.control');
+    const $display = document.querySelector('.display');
+
+    const displayTimer = (min, sec, mil) => {
+      $display.textContent = `${min < 10 ? '0' + min : min}:${sec < 10 ? '0' + sec : sec}:${mil < 10 ? '0' + mil : mil}`;
+    };
+
+    const timer = (() => {
+      let value = 0;
+      let timeoutId = () => {};
+
+      const innerFun = () => {
+        if ($control.textContent === 'Start') {
+          $control.textContent = 'Stop';
+          timeoutId = setInterval(() => {
+            value += 1;
+            displayTimer(Math.floor(value / 3600) % 60, Math.floor(value / 100) % 60, value % 100);
+          }, 10);
+        } else {
+          $control.textContent = 'Start';
+          clearInterval(timeoutId);
+        }
+      };
+      return innerFun;
+    })();
+
+
+    $control.onclick = () => {
+      timer();
+    };
+  </script>
+</body>
+</html>
