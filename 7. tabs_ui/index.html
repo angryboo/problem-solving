@@ -104,17 +104,14 @@
         this.render();
       }
 
-      generateTabContent = () => {
-        return this.tabsData.find(tab => +tab.id === +this.tabState).content;
-      }
-
       render = () => {
         let html = '<ul class="tab-group">';
         this.tabsData.forEach(tab => {
           html += `<li id="${tab.id}" class="tab ${+this.tabState === tab.id ? 'active' : ''}">
         <i class="${tab.iconClass}"></i>${tab.title}</li>`;
         });
-        html += `</ul><div class="tab-content-group"><div class="tab-content">${this.generateTabContent()}</div></div>`;
+        html += `</ul><div class="tab-content-group">
+          <div class="tab-content">${this.tabsData.find(tab => +tab.id === +this.tabState).content}</div></div>`;
         this.$tabs.innerHTML = html;
       }
     }
