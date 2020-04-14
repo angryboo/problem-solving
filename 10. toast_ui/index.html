@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Toast UI</title>
+  <style>
+  @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400);
+
+  body {
+    font-family: 'Open Sans';
+    font-weight: 300;
+    background-color: #D6E1E5;
+  }
+
+  h1 {
+    color: #DB5B33;
+    font-weight: 300;
+    text-align: center;
+  }
+
+  /* CSS 작성 바랍니다. */
+
+  .toast-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  .list-item {
+    width: 400px;
+    padding: 2rem;
+    box-sizing: border-box;
+    position: relative;
+    animation: ani 1.5s ease-out;
+  }
+  @keyframes ani {
+    0% {
+      transform: translate3d(100%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  .list-item.success {
+    background-color: rgba(0, 255, 0, 0.5);
+  }
+  .list-item.warning {
+    background-color: rgba(255, 255, 0, 0.5);
+  }
+  .list-item.error {
+    background-color: rgba(255, 0, 0, 0.5);
+  }
+  .msg-main {
+    font-size: 1.4rem;
+    display: block;
+  }
+  .msg-sub {
+    margin-top: 3rem;
+    display: block;
+  }
+  .close-btn {
+    border: none;
+    background-color: initial;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 0.3rem;
+    right: 0.3rem;
+  }
+  </style>
+</head>
+<body>
+  <h1>JavaScript Toast</h1>
+
+  <button class="show-success">Success</button>
+  <button class="show-error">Error</button>
+  <button class="show-warning">Warning</button>
+
+  <div class="toast-container"></div>
+  <script>
+    const $showSuccess = document.querySelector('.show-success');
+    const $showError = document.querySelector('.show-error');
+    const $showWarning = document.querySelector('.show-warning');
+    const $toastContainer = document.querySelector('.toast-container');
+
+    let toast = [];
+
+
+    const firstRender = () => {
+      $toastContainer.innerHTML = '<ul class="toast-list"></ul>';
+    };
+
+    window.onload = firstRender();
+
+    const addToast = obj => {
+      const $toastList = document.querySelector('.toast-list');
+      const html = `<li id="${obj.id}" class="list-item ${obj.content}">
+          <span class="msg-main">${obj.content === 'success' ? 'Well done!' : 'Check it out!'} ${obj.id}</span>
+          <span class="msg-sub">This is a ${obj.content} alert</span>
+          <button class="close-btn">X
+          </li>`;
+      $toastList.insertAdjacentHTML('beforeend', html);
+    };
+
+    const removeToast = target => {
+      const $toastList = document.querySelector('.toast-list');
+      const $listAll = document.querySelectorAll('.list-item');
+      [...$listAll].forEach(list => {
+        if (target.parentNode.id === list.id) $toastList.removeChild(list);
+      });
+      toast = toast.filter(data => data.id !== +target.parentNode.id);
+    };
+
+    const removeTimer = () => {
+      const $toastList = document.querySelector('.toast-list');
+      const $listAll = document.querySelectorAll('.list-item');
+      const timer = setInterval(() => {
+        const tempArr = [...toast];
+        tempArr.splice(0, 1);
+        toast = tempArr;
+        console.dir($listAll);
+        if ([...$listAll].length) {
+          $toastList.removeChild($toastList.firstElementChild);
+        } else clearInterval(timer);
+      }, 2500);
+    };
+
+    const generateObj = content => {
+      const obj = { id: `${toast.length ? Math.max(...toast.map(data => data.id)) + 1 : 0}`, content };
+      toast = [...toast, obj];
+      addToast(obj);
+    };
+
+
+    $showSuccess.onclick = () => {
+      if (!toast.length) removeTimer();
+      generateObj('success');
+    };
+
+    $showWarning.onclick = () => {
+      if (!toast.length) removeTimer();
+      generateObj('warning');
+    };
+
+    $showError.onclick = () => {
+      if (!toast.length) removeTimer();
+      generateObj('error');
+    };
+
+    $toastContainer.onclick = ({ target }) => {
+      if (!target.matches('.close-btn')) return;
+      removeToast(target);
+    };
+  </script>
+</body>
+</html>
