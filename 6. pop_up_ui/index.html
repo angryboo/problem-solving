@@ -48,6 +48,14 @@
     .active {
       display: block;
     }
+    .btn-close {
+      border: none;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      background-color: inherit;
+      font-size: 1.5rem;
+    }
 
   </style>
 </head>
@@ -96,6 +104,7 @@
     $btnOk.onclick = () => {
       if (!$input.value) return;
       $popupMessage.textContent = $input.value;
+      $input.value = '';
     };
   </script>
 </body>
