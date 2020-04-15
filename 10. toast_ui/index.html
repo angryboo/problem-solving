@@ -107,26 +107,22 @@
       $toastList.insertAdjacentHTML('beforeend', html);
     };
 
-    const removeToast = target => {
+    const removeToast = id => {
       const $toastList = document.querySelector('.toast-list');
       const $listAll = document.querySelectorAll('.list-item');
       [...$listAll].forEach(list => {
-        if (target.parentNode.id === list.id) $toastList.removeChild(list);
+        if (id === list.id) $toastList.removeChild(list);
       });
-      toast = toast.filter(data => data.id !== +target.parentNode.id);
+      toast = toast.filter(data => data.id !== +id);
     };
 
     const removeTimer = () => {
-      const $toastList = document.querySelector('.toast-list');
-      const $listAll = document.querySelectorAll('.list-item');
       const timer = setInterval(() => {
         const tempArr = [...toast];
-        tempArr.splice(0, 1);
+        const [{ id }] = tempArr.splice(0, 1);
         toast = tempArr;
-        console.dir($listAll);
-        if ([...$listAll].length) {
-          $toastList.removeChild($toastList.firstElementChild);
-        } else clearInterval(timer);
+        removeToast(id);
+        if (!toast.length) clearInterval(timer);
       }, 2500);
     };
 
@@ -154,7 +150,7 @@
 
     $toastContainer.onclick = ({ target }) => {
       if (!target.matches('.close-btn')) return;
-      removeToast(target);
+      removeToast(target.parentNode.id);
     };
   </script>
 </body>
