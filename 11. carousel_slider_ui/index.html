@@ -31,8 +31,20 @@
       display: flex;
       /* transition: 1s; */
     }
-    .relocation{
-      animation: reloc duration timing-function delay iteration-count direction fill-mode;
+    .relocation-fw{
+      animation: trans-fw 0.5s linear 1 backwards;
+    }
+    @keyframes trans-fw {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    .relocation-bw{
+      animation: trans-bw 0.5s linear 1 backwards;
+    }
+    @keyframes trans-bw {
+      0% { transform: translate3d(-100%, 0, 0); }
+      100% { transform: translate3d(0%, 0, 0); }
     }
 
     .carousel-item {
@@ -150,10 +162,14 @@
       relocation() {
         console.log(this);
         if (this.position === -500) {
+          this.container.classList.add('relocation-fw');
+          this.container.style.transition = '';
           this.position = -100;
           this.container.style.transform = `translate3d(${this.position}%, 0, 0)`;
         }
         if (this.position === 0) {
+          this.container.classList.add('relocation-bw');
+          this.container.style.transition = '';
           this.position = -400;
           this.container.style.transform = `translate3d(${this.position}%, 0, 0)`;
         }
@@ -162,8 +178,9 @@
       toMove() {
         this.container.style.transition = '0.5s';
         this.container.style.transform = `translate3d(${this.position}%, 0, 0)`;
+        this.container.classList.remove('relocation-fw');
+        this.container.classList.remove('relocation-bw');
         this.relocation();
-        console.log(this.position);
       }
     
       toNext() {
